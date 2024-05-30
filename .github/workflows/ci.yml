@@ -36,3 +36,17 @@ jobs:
 
       - name: Build
         run: go build -v ./...
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v5
+        with:
+          tags: smoretto/app
+          push: true
