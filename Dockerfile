@@ -14,8 +14,7 @@ ENV CGO_ENABLED=0
 
 ARG version=undef
 
-RUN go build -ldflags "-X main.version=$version" -o app cmd/main.go
-
+RUN go build -ldflags "-X main.version=$version" -o app cmd/app/main.go
 FROM scratch AS app
 
 COPY --from=build /etc/passwd /etc/passwd
