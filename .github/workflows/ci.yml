@@ -3,7 +3,9 @@ name: CI
 on:
   push:
     branches: 
-     - main
+      - main
+    tags:
+      - v*
   pull_request:
     branches:
       - main
@@ -46,9 +48,16 @@ jobs:
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
 
+      name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/smoretto/app
+
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v5
         with:
-          tags: ghcr.io/smoretto/app:latest
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
